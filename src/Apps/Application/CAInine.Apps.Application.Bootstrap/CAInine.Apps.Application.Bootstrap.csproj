@@ -4,4 +4,12 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Cloud\Core\CAInine.Core.Models\CAInine.Core.Models.csproj" />
+    <ProjectReference Include="..\..\Core\CAInine.Apps.Core.Interfaces\CAInine.Apps.Core.Interfaces.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\CAInine.Apps.Infrastructure.Business\CAInine.Apps.Infrastructure.Business.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\CAInine.Apps.Infrastructure.Data\CAInine.Apps.Infrastructure.Data.csproj" />
+    <ProjectReference Include="..\CAInine.Apps.Application.ViewModels\CAInine.Apps.Application.ViewModels.csproj" />
+  </ItemGroup>
+
 </Project>

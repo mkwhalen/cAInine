@@ -79,5 +79,35 @@
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Cloud\Core\CAInine.Core.Models\CAInine.Core.Models.csproj">
+      <Project>{7cf35bf1-c8a6-49a9-96a2-59e391e0619e}</Project>
+      <Name>CAInine.Core.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Application\CAInine.Apps.Application.Bootstrap\CAInine.Apps.Application.Bootstrap.csproj">
+      <Project>{fc97e81d-e1da-4c7f-a0a5-306382049b75}</Project>
+      <Name>CAInine.Apps.Application.Bootstrap</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Application\CAInine.Apps.Application.Forms\CAInine.Apps.Application.Forms.csproj">
+      <Project>{f30c5002-20cb-4459-947c-364dff00efb2}</Project>
+      <Name>CAInine.Apps.Application.Forms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Application\CAInine.Apps.Application.ViewModels\CAInine.Apps.Application.ViewModels.csproj">
+      <Project>{9dcb0139-96af-4fb5-811b-5432bb94aa31}</Project>
+      <Name>CAInine.Apps.Application.ViewModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\CAInine.Apps.Core.Interfaces\CAInine.Apps.Core.Interfaces.csproj">
+      <Project>{f3eae1c6-1849-47d5-9e3b-e66fba417b2b}</Project>
+      <Name>CAInine.Apps.Core.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Infrastructure\CAInine.Apps.Infrastructure.Business\CAInine.Apps.Infrastructure.Business.csproj">
+      <Project>{15b7d294-1df6-4f20-aabc-1037e930f897}</Project>
+      <Name>CAInine.Apps.Infrastructure.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Infrastructure\CAInine.Apps.Infrastructure.Data\CAInine.Apps.Infrastructure.Data.csproj">
+      <Project>{e77ea333-6b78-4a9e-8218-c99d3d5432de}</Project>
+      <Name>CAInine.Apps.Infrastructure.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

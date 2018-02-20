@@ -12,4 +12,12 @@
     <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Clients\CAInine.Clients.Api\CAInine.Clients.Api.csproj" />
+    <ProjectReference Include="..\..\Core\CAInine.Core.Interfaces\CAInine.Core.Interfaces.csproj" />
+    <ProjectReference Include="..\..\Core\CAInine.Core.Models\CAInine.Core.Models.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\CAInine.Infrastructure.Business\CAInine.Infrastructure.Business.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\CAInine.Infrastructure.Data\CAInine.Infrastructure.Data.csproj" />
+  </ItemGroup>
+
 </Project>

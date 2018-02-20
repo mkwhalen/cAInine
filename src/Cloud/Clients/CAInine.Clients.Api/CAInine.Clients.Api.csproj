@@ -16,4 +16,11 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\CAInine.Core.Interfaces\CAInine.Core.Interfaces.csproj" />
+    <ProjectReference Include="..\..\Core\CAInine.Core.Models\CAInine.Core.Models.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\CAInine.Infrastructure.Business\CAInine.Infrastructure.Business.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\CAInine.Infrastructure.Data\CAInine.Infrastructure.Data.csproj" />
+  </ItemGroup>
+
 </Project>
