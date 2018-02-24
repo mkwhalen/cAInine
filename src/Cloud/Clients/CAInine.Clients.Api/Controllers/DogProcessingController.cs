@@ -36,8 +36,8 @@ namespace CAInine.Clients.Api.Controllers
         /// <summary>
         /// Http GET endpoint for searching for submitted dogs by breed
         /// </summary>
-        /// <param name="breed"></param>
-        /// <returns></returns>
+        /// <param name="breed">The breed name</param>
+        /// <returns>All found dogs with the given breed</returns>
         [HttpGet("byBreed/{breed}")]
         public async Task<ActionResult> GetByBreed(string breed)
         {

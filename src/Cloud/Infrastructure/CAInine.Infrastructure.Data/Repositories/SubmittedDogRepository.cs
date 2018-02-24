@@ -41,7 +41,7 @@ namespace CAInine.Infrastructure.Data.Repositories
         public async Task<IEnumerable<SubmittedDog>> GetByBreed(string breed)
         {
             return await _context.SubmittedDogs
-                .Where(dog => dog.BreedName == breed)
+                .Where(dog => dog.BreedName.ToLower() == breed.ToLower())
                 .ToListAsync();
         }
     }
