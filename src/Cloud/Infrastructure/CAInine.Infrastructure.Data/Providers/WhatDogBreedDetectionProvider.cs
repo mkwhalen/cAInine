@@ -36,7 +36,7 @@ namespace CAInine.Infrastructure.Data.Providers
             if(response.IsSuccessStatusCode)
             {
                 var jsonContent = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<ProcessedDogResult>(jsonContent);
+                var result = JsonConvert.DeserializeObject<ProcessedDogResult>(JsonConvert.DeserializeObject<string>(jsonContent)); // note: the what-dog api double serializes the json, so we need to double down too.
                 return result;
             }
             else

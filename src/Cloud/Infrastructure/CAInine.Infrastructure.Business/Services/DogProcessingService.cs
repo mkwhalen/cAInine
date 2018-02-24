@@ -61,8 +61,8 @@ namespace CAInine.Infrastructure.Business.Services
                 // add submitted info to repository
                 var entity = new SubmittedDog
                 {
-                    BreedName = detectedBreedResult.Breed,
-                    BreedDetails = detectedBreedResult.About,
+                    BreedName = detectedBreedResult.BreedName,
+                    BreedDetails = detectedBreedResult.Keywords,
                     ImageUrl = imageUrl,
                     CreatedDate = DateTime.UtcNow,
                     ModifiedDate = DateTime.UtcNow

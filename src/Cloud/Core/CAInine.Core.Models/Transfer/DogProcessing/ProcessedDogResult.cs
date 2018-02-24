@@ -10,7 +10,8 @@ namespace CAInine.Core.Models.Transfer.DogProcessing
     public class ProcessedDogResult
     {
         public bool IsDog { get; set; }
-        public string Breed { get; set; }
-        public string About { get; set; }
+        public string BreedName { get; set; }
+        public string Keywords { get; set; }
+        public string AnalyticsEvent { get; set; }
     }
 }
