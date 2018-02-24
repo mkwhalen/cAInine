@@ -41,7 +41,7 @@ namespace CAInine.Infrastructure.Data.Providers
             }
             else
             {
-                throw new Exception("Unable to process dog request.")
+                throw new Exception("Unable to process dog request.");
             }
         }
     }

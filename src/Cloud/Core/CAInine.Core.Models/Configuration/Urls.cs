@@ -9,7 +9,6 @@ namespace CAInine.Core.Models.Configuration
     /// </summary>
     public class Urls
     {
-        public string BlobStorageBaseUrl { get; set; }
         public string DogDetectionUrl { get; set; }
     }
 }
