@@ -6,6 +6,7 @@ using CAInine.Core.Models.Results;
 using CAInine.Core.Models.Transfer.DogProcessing;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,13 +21,13 @@ namespace CAInine.Infrastructure.Business.Services
     {
         private readonly IBlobProvider _blobStorageProvider;
         private readonly IBreedDetectionProvider _breedDetectionProvider;
-        private readonly ISubmittedDogRepository _subittedDogRepository;
+        private readonly ISubmittedDogRepository _submittedDogRepository;
 
         public DogProcessingService(IBlobProvider blobProvider, IBreedDetectionProvider breedDetectionProvider, ISubmittedDogRepository submittedDogRepository)
         {
             _blobStorageProvider = blobProvider;
             _breedDetectionProvider = breedDetectionProvider;
-            _subittedDogRepository = submittedDogRepository;
+            _submittedDogRepository = submittedDogRepository;
         }
 
         /// <summary>
@@ -41,7 +42,7 @@ namespace CAInine.Infrastructure.Business.Services
             try
             {
                 // validate input 
-                if(string.IsNullOrEmpty(fileName) || imageDate == null)
+                if (string.IsNullOrEmpty(fileName) || imageDate == null)
                     return new InvalidResult<SubmittedDog>("Invalid image uploaded.");
 
                 // submit the image data to blob storage
@@ -67,7 +68,7 @@ namespace CAInine.Infrastructure.Business.Services
                     CreatedDate = DateTime.UtcNow,
                     ModifiedDate = DateTime.UtcNow
                 };
-                var finalEntity = await _subittedDogRepository.AddAsync(entity);
+                var finalEntity = await _submittedDogRepository.AddAsync(entity);
 
                 // return result
                 return new SuccessResult<SubmittedDog>(finalEntity);
@@ -77,6 +78,29 @@ namespace CAInine.Infrastructure.Business.Services
                 Console.WriteLine("Error analyzing dog image:");
                 Console.WriteLine(ex);
                 return new UnexpectedResult<SubmittedDog>();
+            }
+        }
+
+        /// <summary>
+        /// Gets the submitted dogs for the given breed
+        /// </summary>
+        /// <param name="breed">The breed to search for</param>
+        /// <returns>The list of submitted dogs wrapped in a result</returns>
+        public async Task<Result<List<SubmittedDog>>> GetSubmittedDogsByBreedAsync(string breed)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(breed))
+                    return new InvalidResult<List<SubmittedDog>>("You must submit a breed");
+
+                var dogs = await _submittedDogRepository.GetByBreed(breed);
+                return new SuccessResult<List<SubmittedDog>>(dogs.ToList());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error searching for dogs:");
+                Console.WriteLine(ex);
+                return new UnexpectedResult<List<SubmittedDog>>();
             }
         }
     }

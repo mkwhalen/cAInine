@@ -34,6 +34,18 @@ namespace CAInine.Clients.Api.Controllers
         }
 
         /// <summary>
+        /// Http GET endpoint for searching for submitted dogs by breed
+        /// </summary>
+        /// <param name="breed"></param>
+        /// <returns></returns>
+        [HttpGet("byBreed/{breed}")]
+        public async Task<ActionResult> GetByBreed(string breed)
+        {
+            var result = await _dogProcessingService.GetSubmittedDogsByBreedAsync(breed);
+            return FromResult(result);
+        }
+
+        /// <summary>
         /// Gets a byte array from a form file
         /// </summary>
         /// <param name="file">The form file</param>

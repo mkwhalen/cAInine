@@ -1,8 +1,10 @@
 ﻿using CAInine.Core.Interfaces.Repositories;
 using CAInine.Core.Models.Entities;
 using CAInine.Infrastructure.Data.Contexts;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,6 +31,18 @@ namespace CAInine.Infrastructure.Data.Repositories
             await _context.SubmittedDogs.AddAsync(entity);
             await _context.SaveChangesAsync();
             return entity;
+        }
+
+        /// <summary>
+        /// Gets all the submitted dogs with the given breed
+        /// </summary>
+        /// <param name="breed">The breed</param>
+        /// <returns>A list of submitted dogs</returns>
+        public async Task<IEnumerable<SubmittedDog>> GetByBreed(string breed)
+        {
+            return await _context.SubmittedDogs
+                .Where(dog => dog.BreedName == breed)
+                .ToListAsync();
         }
     }
 }
