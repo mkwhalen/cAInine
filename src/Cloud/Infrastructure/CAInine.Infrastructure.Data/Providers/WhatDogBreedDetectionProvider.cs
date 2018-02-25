@@ -33,14 +33,17 @@ namespace CAInine.Infrastructure.Data.Providers
         public async Task<ProcessedDogResult> SubmitDogAsync(ProcessDogRequest model)
         {
             var response = await _client.PostAsync(_urlSettings.Value.DogDetectionUrl, new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json"));
-            if(response.IsSuccessStatusCode)
+
+            var contentString = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
             {
-                var jsonContent = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<ProcessedDogResult>(JsonConvert.DeserializeObject<string>(jsonContent)); // note: the what-dog api double serializes the json, so we need to double down too.
+                var result = JsonConvert.DeserializeObject<ProcessedDogResult>(JsonConvert.DeserializeObject<string>(contentString)); // note: the what-dog api double serializes the json, so we need to double down too.
                 return result;
             }
             else
             {
+                Console.WriteLine("Error posting dog data:");
+                Console.WriteLine(contentString);
                 throw new Exception("Unable to process dog request.");
             }
         }

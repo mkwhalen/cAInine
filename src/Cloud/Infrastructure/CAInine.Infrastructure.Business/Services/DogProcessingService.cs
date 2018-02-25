@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace CAInine.Infrastructure.Business.Services
@@ -44,6 +45,11 @@ namespace CAInine.Infrastructure.Business.Services
                 // validate input 
                 if (string.IsNullOrEmpty(fileName) || imageDate == null)
                     return new InvalidResult<SubmittedDog>("Invalid image uploaded.");
+
+                // format filename
+                var rgx = new Regex("[^a-zA-Z0-9-. -]");
+                fileName = rgx.Replace(fileName, "");
+                fileName = Guid.NewGuid().ToString() + fileName; // add guid to make unique
 
                 // submit the image data to blob storage
                 var imageUrl = await _blobStorageProvider.UploadImageAsync(fileName, imageDate);
