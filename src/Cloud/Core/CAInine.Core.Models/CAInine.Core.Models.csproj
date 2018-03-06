@@ -8,5 +8,6 @@
     <Folder Include="Entities\" />
     <Folder Include="Result\" />
     <Folder Include="Transfer\PetFinder\" />
+    <Folder Include="Transfer\PetFinder\Enums\" />
   </ItemGroup>
 </Project>

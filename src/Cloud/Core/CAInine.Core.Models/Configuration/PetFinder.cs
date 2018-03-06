@@ -8,5 +8,6 @@ namespace CAInine.Core.Models.Configuration
     {
         public string ApiKey { get; set; }
         public string ApiSecret { get; set; }
+        public string Url { get; set; }
     }
 }
