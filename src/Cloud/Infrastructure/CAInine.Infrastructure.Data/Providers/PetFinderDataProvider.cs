@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using CAInine.Core.Interfaces.Providers;
 using CAInine.Core.Models.Configuration;
+using CAInine.Core.Models.Transfer;
 using CAInine.Core.Models.Transfer.PetFinder;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CAInine.Infrastructure.Data.Providers
 {
@@ -24,48 +29,62 @@ namespace CAInine.Infrastructure.Data.Providers
             _petFinderSettings = petFinderSettings;
         }
 
-        public async Task<petfinderBreedList> GetAvailableBreedsAsync(string animal)
+        public async Task<List<string>> GetAvailableBreedsAsync(string animal)
         {
-            return await MakePetFinderRequestAsync<petfinderBreedList>($"{_petFinderSettings.Value.Url}breed.list?key={_petFinderSettings.Value.ApiKey}&animal={animal}");
+            var jobject = await MakePetFinderRequestAsync($"{_petFinderSettings.Value.Url}breed.list?format=json&key={_petFinderSettings.Value.ApiKey}&animal={animal}");
+            var breeds = (JArray)jobject["petfinder"]?["breeds"]?["breed"];
+            return breeds?.Select(j => j["$t"].Value<string>()).ToList();
         }
 
-        public async Task<petfinderPetRecordList> GetPetsAtShelter(string shelterId)
+        public async Task<List<Animal>> GetPetsAtShelter(string shelterId)
         {
-            return await MakePetFinderRequestAsync<petfinderPetRecordList>($"{_petFinderSettings.Value.Url}shelter.getPets?key={_petFinderSettings.Value.ApiKey}&id={shelterId}");
+            var jobject = await MakePetFinderRequestAsync($"{_petFinderSettings.Value.Url}shelter.getPets?format=json&key={_petFinderSettings.Value.ApiKey}&id={shelterId}");
+            // TODO: Kenzie - finish this
+            var pets = (JArray)jobject["petfinder"]?["pets"]?["pet"];
+            
+            return pets.Select(jp => new Animal
+            {
+                Id = jp["id"]?["$t"]?.Value<string>(),
+                AnimalType = jp["animal"]?["$t"]?.Value<string>()
+                // TODO: map the other properties.
+            }).ToList();
         }
 
-        public async Task<petfinderPetRecordList> GetPetsByBreedAsync(string animal, string breed, string location)
+        public async Task<List<Animal>> GetPetsByBreedAsync(string animal, string breed, string location)
         {
-            return await MakePetFinderRequestAsync<petfinderPetRecordList>($"{_petFinderSettings.Value.Url}pet.find?key={_petFinderSettings.Value.ApiKey}&animal={animal}&breed={breed}&location={location}");
+            var jobject = await MakePetFinderRequestAsync($"{_petFinderSettings.Value.Url}pet.find?format=json&key={_petFinderSettings.Value.ApiKey}&animal={animal}&breed={breed}&location={location}");
+            // TODO: Kenzie - finish this
+            return null;
         }
 
-        public async Task<petfinderPetRecord> GetRandomPetAsync(string animal)
+        public async Task<Animal> GetRandomPetAsync(string animal)
         {
-            return await MakePetFinderRequestAsync<petfinderPetRecord>($"{_petFinderSettings.Value.Url}pet.getRandom?key={_petFinderSettings.Value.ApiKey}&animal={animal}");
+            var jobject = await MakePetFinderRequestAsync($"{_petFinderSettings.Value.Url}pet.getRandom?format=json&key={_petFinderSettings.Value.ApiKey}&animal={animal}");
+            // TODO: Kenzie - finish this
+            return null;
         }
 
-        public async Task<petfinderShelterRecordList> GetSheltersByBreed(string animal, string breed, int skip, int take)
+        public async Task<List<Shelter>> GetSheltersByBreed(string animal, string breed, int skip, int take)
         {
-            return await MakePetFinderRequestAsync<petfinderShelterRecordList>($"{_petFinderSettings.Value.Url}shelter.listByBreed?key={_petFinderSettings.Value.ApiKey}&animal={animal}&breed={breed}&offset={skip}&count={take}");
+            var jobject = await MakePetFinderRequestAsync($"{_petFinderSettings.Value.Url}shelter.listByBreed?format=json&key={_petFinderSettings.Value.ApiKey}&animal={animal}&breed={breed}&offset={skip}&count={take}");
+            // TODO: Kenzie - finish this
+            return null;
         }
 
-        public async Task<petfinderShelterRecordList> GetSheltersByLocation(string location)
+        public async Task<List<Shelter>> GetSheltersByLocation(string location)
         {
-            return await MakePetFinderRequestAsync<petfinderShelterRecordList>($"{_petFinderSettings.Value.Url}shelter.find?key={_petFinderSettings.Value.ApiKey}&location={location}");
+            var jobject = await MakePetFinderRequestAsync($"{_petFinderSettings.Value.Url}shelter.find?kformat=json&ey={_petFinderSettings.Value.ApiKey}&location={location}");
+            // TODO: Kenzie - finish this
+            return null;
         }
 
-        private async Task<T> MakePetFinderRequestAsync<T>(string url)
+        private async Task<JObject> MakePetFinderRequestAsync(string url)
         {
             var response = await _client.GetAsync(url);
             var responseBody = await response.Content.ReadAsStringAsync();
             if(response.IsSuccessStatusCode)
             {
-                var serializer = new XmlSerializer(typeof(T));
-                using (var reader = new StringReader(responseBody))
-                {
-                    var result = (T)serializer.Deserialize(reader);
-                    return result;
-                }
+                return JObject.Parse(responseBody);
             }
 
             throw new Exception(responseBody);
