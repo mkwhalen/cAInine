@@ -12,5 +12,6 @@ namespace CAInine.Core.Interfaces.Services
         Task<Result<IEnumerable<Animal>>> GetAnimalsByShelterAsync(string shelterId);
         Task<Result<IEnumerable<Shelter>>> GetSheltersByLocation(string location);
         Task<Result<IEnumerable<Animal>>> GetAnimalsByBreedAsync(string breed, string location);
+        Task<Result<IEnumerable<Shelter>>> GetSheltersByBreed(string breed, int skip, int take);
     }
 }

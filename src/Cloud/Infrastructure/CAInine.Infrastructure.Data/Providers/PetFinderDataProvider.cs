@@ -40,7 +40,7 @@ namespace CAInine.Infrastructure.Data.Providers
         public async Task<List<Animal>> GetPetsAtShelter(string shelterId)
         {
             var jobject = await MakePetFinderRequestAsync($"{_petFinderSettings.Value.Url}shelter.getPets?format=json&key={_petFinderSettings.Value.ApiKey}&id={shelterId}");
-            // TODO: Kenzie - finish this
+            
             var pets = (JArray)jobject["petfinder"]?["pets"]?["pet"];
 
             return pets.Select(jp => new Animal
@@ -63,29 +63,101 @@ namespace CAInine.Infrastructure.Data.Providers
         public async Task<List<Animal>> GetPetsByBreedAsync(string animal, string breed, string location)
         {
             var jobject = await MakePetFinderRequestAsync($"{_petFinderSettings.Value.Url}pet.find?format=json&key={_petFinderSettings.Value.ApiKey}&animal={animal}&breed={breed}&location={location}");
-            // TODO: Kenzie - finish this
-            return null;
+
+            var pets = (JArray)jobject["petfinder"]?["pets"]?["pet"];
+          
+            return pets.Select(jp => new Animal
+            {
+                Id = jp["id"]?["$t"]?.Value<string>(),
+                ShelterId = jp["shelterId"]?["$t"]?.Value<string>(),
+                ShelterPetId = jp["shelterPetId"]?["$t"]?.Value<string>(),
+                Name = jp["name"]?["$t"]?.Value<string>(),
+                AnimalType = jp["animal"]?["$t"]?.Value<string>(),
+                Breeds = GetBreedsFromAnimal(jp),
+                IsMixBreed = ConvertStringToBool(jp["mix"]?["$t"]?.Value<string>()),
+                Description = jp["description"]?["$t"]?.Value<string>(),
+                Gender = ConvertStringToGender(jp["sex"]?["$t"]?.Value<string>()),
+                Age = ConvertStringToAge(jp["age"]?["$t"]?.Value<string>()),
+                Size = ConvertStringToSize(jp["size"]?["$t"]?.Value<string>())
+            }).ToList();
         }
 
         public async Task<Animal> GetRandomPetAsync(string animal)
         {
             var jobject = await MakePetFinderRequestAsync($"{_petFinderSettings.Value.Url}pet.getRandom?format=json&key={_petFinderSettings.Value.ApiKey}&animal={animal}");
-            // TODO: Kenzie - finish this
-            return null;
+
+            
+            var pet = jobject["petfinder"]?["pet"];
+
+
+
+            return new Animal
+            {
+
+                Id = pet["id"]?["$t"]?.Value<string>(),
+                ShelterId = pet["shelterId"]?["$t"]?.Value<string>(),
+                ShelterPetId = pet["shelterPetId"]?["$t"]?.Value<string>(),
+                Name = pet["name"]?["$t"]?.Value<string>(),
+                AnimalType = pet["animal"]?["$t"]?.Value<string>(),
+                Breeds = GetBreedsFromAnimal(pet),
+                IsMixBreed = ConvertStringToBool(pet["mix"]?["$t"]?.Value<string>()),
+                Description = pet["description"]?["$t"]?.Value<string>(),
+                Gender = ConvertStringToGender(pet["sex"]?["$t"]?.Value<string>()),
+                Age = ConvertStringToAge(pet["age"]?["$t"]?.Value<string>()),
+                Size = ConvertStringToSize(pet["size"]?["$t"]?.Value<string>())
+            };
+
+           
         }
 
         public async Task<List<Shelter>> GetSheltersByBreed(string animal, string breed, int skip, int take)
         {
             var jobject = await MakePetFinderRequestAsync($"{_petFinderSettings.Value.Url}shelter.listByBreed?format=json&key={_petFinderSettings.Value.ApiKey}&animal={animal}&breed={breed}&offset={skip}&count={take}");
-            // TODO: Kenzie - finish this
-            return null;
+          
+            var shelters = (JArray)jobject["petfinder"]?["shelters"]?["shelter"];
+
+            return shelters?.Select(jp => new Shelter
+            {
+                Id = jp["id"]?["$t"]?.Value<string>(),
+                Name = jp["name"]?["$t"]?.Value<string>(),
+                Address1 = jp["address1"]?["$t"]?.Value<string>(),
+                Address2 = jp["address2"]?["$t"]?.Value<string>(),
+                City = jp["city"]?["$t"]?.Value<string>(),
+                State = jp["state"]?["$t"]?.Value<string>(),
+                ZipCode = jp["zip"]?["$t"]?.Value<string>(),
+                Country = jp["country"]?["$t"]?.Value<string>(),
+                Latitude = ConvertStringToDecimal(jp["latitude"]?["$t"]?.Value<string>()),
+                Longitude = ConvertStringToDecimal(jp["longitude"]?["$t"]?.Value<string>()),
+                PhoneNumber = jp["phone"]?["$t"]?.Value<string>(),
+                Email = jp["email"]?["$t"]?.Value<string>()
+            }).ToList();
+
+       
         }
 
         public async Task<List<Shelter>> GetSheltersByLocation(string location)
         {
             var jobject = await MakePetFinderRequestAsync($"{_petFinderSettings.Value.Url}shelter.find?format=json&key={_petFinderSettings.Value.ApiKey}&location={location}");
-            // TODO: Kenzie - finish this
-            return null;
+
+            var shelters = (JArray)jobject["petfinder"]?["shelters"]?["shelter"];
+
+            return shelters.Select(jp => new Shelter
+            {
+                Id = jp["id"]?["$t"]?.Value<string>(),
+                Name = jp["name"]?["$t"]?.Value<string>(),
+                Address1 = jp["address1"]?["$t"]?.Value<string>(),
+                Address2 = jp["address2"]?["$t"]?.Value<string>(),
+                City = jp["city"]?["$t"]?.Value<string>(),
+                State = jp["state"]?["$t"]?.Value<string>(),
+                ZipCode = jp["zip"]?["$t"]?.Value<string>(),
+                Country = jp["country"]?["$t"]?.Value<string>(),
+                Latitude = ConvertStringToDecimal(jp["latitude"]?["$t"]?.Value<string>()),
+                Longitude = ConvertStringToDecimal(jp["longitude"]?["$t"]?.Value<string>()),
+                PhoneNumber = jp["phone"]?["$t"]?.Value<string>(),
+                Email = jp["email"]?["$t"]?.Value<string>()
+            }).ToList();
+
+            
         }
 
         private async Task<JObject> MakePetFinderRequestAsync(string url)
@@ -147,6 +219,12 @@ namespace CAInine.Infrastructure.Data.Providers
             }
 
             return multiBreeds;
+        }
+
+        private decimal ConvertStringToDecimal(string latOrLongCode)
+        {
+            decimal.TryParse(latOrLongCode, out decimal latOrLongDecimal);
+            return latOrLongDecimal;
         }
     }
 }

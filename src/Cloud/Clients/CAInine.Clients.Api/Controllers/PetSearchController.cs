@@ -43,5 +43,12 @@ namespace CAInine.Clients.Api.Controllers
             var result = await _petFinderService.GetBreedsAsync();
             return FromResult(result);
         }
+
+        [HttpGet("shelters/{breed}")]
+        public async Task<IActionResult> GetSheltersByBreed(string breed, int skip, int take)
+        {
+            var result = await _petFinderService.GetSheltersByBreed(breed, skip, take);
+            return FromResult(result);
+        }
     }
 }

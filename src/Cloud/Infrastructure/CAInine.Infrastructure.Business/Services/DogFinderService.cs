@@ -9,6 +9,7 @@ using CAInine.Core.Models.Transfer;
 using CAInine.Core.Models.Transfer.PetFinder;
 using CAInine.Core.Models.Transfer.PetFinder.Enums;
 
+
 namespace CAInine.Infrastructure.Business.Services
 {
     public class DogFinderService : IPetFinderService
@@ -21,23 +22,23 @@ namespace CAInine.Infrastructure.Business.Services
 
         public async Task<Result<IEnumerable<Animal>>> GetAnimalsByBreedAsync(string breed, string location)
         {
-            //try
-            //{
-            //    var record = await _petProvider.GetPetsByBreedAsync("dog", breed, location);
-            //    if(record != null)
-            //    {
-            //        var animals = record.pet.Select(p => CreateAnimalFromRecord(p));
-            //        return new SuccessResult<IEnumerable<Animal>>(animals);
-            //    }
-            //    return new UnexpectedResult<IEnumerable<Animal>>();
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine(ex);
-            //    return new UnexpectedResult<IEnumerable<Animal>>();
-            //}
+            try
+            {
+                var record = await _petProvider.GetPetsByBreedAsync("dog", breed, location);
+                if (record != null)
+                {
+                    
+                    return new SuccessResult<IEnumerable<Animal>>(record);
+                }
+                return new SuccessResult<IEnumerable<Animal>>(new List<Animal>());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return new UnexpectedResult<IEnumerable<Animal>>();
+            }
 
-            return null;
+          
         }
 
         public async Task<Result<IEnumerable<Animal>>> GetAnimalsByShelterAsync(string shelterId)
@@ -49,14 +50,14 @@ namespace CAInine.Infrastructure.Business.Services
                 {
                     return new SuccessResult<IEnumerable<Animal>>(record);
                 }
-                return new UnexpectedResult<IEnumerable<Animal>>();
+                return new SuccessResult<IEnumerable<Animal>>(new List<Animal>());
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
                 return new UnexpectedResult<IEnumerable<Animal>>();
             }
-            return null;
+           
         }
 
         public async Task<Result<IEnumerable<string>>> GetBreedsAsync()
@@ -68,7 +69,7 @@ namespace CAInine.Infrastructure.Business.Services
                 {
                     return new SuccessResult<IEnumerable<string>>(breeds);
                 }
-                return new UnexpectedResult<IEnumerable<string>>();
+                return new SuccessResult<IEnumerable<string>>(new List<string>());
             }
             catch (Exception ex)
             {
@@ -79,23 +80,44 @@ namespace CAInine.Infrastructure.Business.Services
 
         public async Task<Result<IEnumerable<Shelter>>> GetSheltersByLocation(string location)
         {
-            //try
-            //{
-            //    var record = await _petProvider.GetSheltersByLocation(location);
-            //    if (record != null)
-            //    {
-            //        var shelters = record.shelter.Select(s => CreateShelterFromRecord(s));
-            //        return new SuccessResult<IEnumerable<Shelter>>(shelters);
-            //    }
-            //    return new UnexpectedResult<IEnumerable<Shelter>>();
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine(ex);
-            //    return new UnexpectedResult<IEnumerable<Shelter>>();
-            //}          
-            return null;
+            try
+            {
+                var record = await _petProvider.GetSheltersByLocation(location);
+                if (record != null)
+                {
+                  
+                    return new SuccessResult<IEnumerable<Shelter>>(record);
+                }
+                return new SuccessResult<IEnumerable<Shelter>>(new List<Shelter>());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return new UnexpectedResult<IEnumerable<Shelter>>();
+            }
+            
         }
+
+        public async Task<Result<IEnumerable<Shelter>>> GetSheltersByBreed(string breed, int skip, int take)
+        {
+            try
+            {
+                var record = await _petProvider.GetSheltersByBreed("dog", breed, skip, take);
+                if (record != null)
+                {
+
+                    return new SuccessResult<IEnumerable<Shelter>>(record);
+                }
+                return new SuccessResult<IEnumerable<Shelter>>(new List<Shelter>());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return new UnexpectedResult<IEnumerable<Shelter>>();
+            }
+
+        }
+
 
         private Animal CreateAnimalFromRecord(petfinderPetRecord record)
         {
