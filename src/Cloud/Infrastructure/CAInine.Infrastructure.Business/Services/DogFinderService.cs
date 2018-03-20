@@ -12,6 +12,10 @@ using CAInine.Core.Models.Transfer.PetFinder.Enums;
 
 namespace CAInine.Infrastructure.Business.Services
 {
+
+    /// <summary>
+    /// Business logic for searching for dogs
+    /// </summary>
     public class DogFinderService : IPetFinderService
     {
         private readonly IPetSearchProvider _petProvider;
@@ -27,7 +31,7 @@ namespace CAInine.Infrastructure.Business.Services
                 var record = await _petProvider.GetPetsByBreedAsync("dog", breed, location);
                 if (record != null)
                 {
-                    
+
                     return new SuccessResult<IEnumerable<Animal>>(record);
                 }
                 return new SuccessResult<IEnumerable<Animal>>(new List<Animal>());
@@ -38,7 +42,7 @@ namespace CAInine.Infrastructure.Business.Services
                 return new UnexpectedResult<IEnumerable<Animal>>();
             }
 
-          
+
         }
 
         public async Task<Result<IEnumerable<Animal>>> GetAnimalsByShelterAsync(string shelterId)
@@ -57,7 +61,7 @@ namespace CAInine.Infrastructure.Business.Services
                 Console.WriteLine(ex);
                 return new UnexpectedResult<IEnumerable<Animal>>();
             }
-           
+
         }
 
         public async Task<Result<IEnumerable<string>>> GetBreedsAsync()
@@ -75,7 +79,7 @@ namespace CAInine.Infrastructure.Business.Services
             {
                 Console.WriteLine(ex);
                 return new UnexpectedResult<IEnumerable<string>>();
-            }          
+            }
         }
 
         public async Task<Result<IEnumerable<Shelter>>> GetSheltersByLocation(string location)
@@ -85,7 +89,7 @@ namespace CAInine.Infrastructure.Business.Services
                 var record = await _petProvider.GetSheltersByLocation(location);
                 if (record != null)
                 {
-                  
+
                     return new SuccessResult<IEnumerable<Shelter>>(record);
                 }
                 return new SuccessResult<IEnumerable<Shelter>>(new List<Shelter>());
@@ -95,7 +99,7 @@ namespace CAInine.Infrastructure.Business.Services
                 Console.WriteLine(ex);
                 return new UnexpectedResult<IEnumerable<Shelter>>();
             }
-            
+
         }
 
         public async Task<Result<IEnumerable<Shelter>>> GetSheltersByBreed(string breed, int skip, int take)
@@ -115,45 +119,6 @@ namespace CAInine.Infrastructure.Business.Services
                 Console.WriteLine(ex);
                 return new UnexpectedResult<IEnumerable<Shelter>>();
             }
-
-        }
-
-
-        private Animal CreateAnimalFromRecord(petfinderPetRecord record)
-        {
-            return new Animal
-            {
-                Id = record.id,
-                ShelterId = record.shelterId,
-                ShelterPetId = record.shelterPetId,
-                Name = record.name,
-                Description = record.name,
-                AnimalType = record.animal.ToString(),
-                Breeds = record.breeds.breed.Select(b => b.ToString()).ToList(),
-                IsMixBreed = record.mix == petfinderPetRecordMix.yes,
-                Gender = (PetGender)record.sex,
-                Age = (PetAgeType)record.age,
-                Size = (PetSize)record.size
-            };
-        }
-
-        private Shelter CreateShelterFromRecord(petfinderShelterRecord record)
-        {
-            return new Shelter
-            {
-                Id = record.id,
-                Name = record.name,
-                Address1 = record.address1,
-                Address2 = record.address2,
-                City = record.city,
-                State = record.state,
-                ZipCode = record.zip,
-                Country = record.country,
-                Latitude = record.latitude,
-                Longitude = record.longitude,
-                PhoneNumber = record.phone,
-                Email = record.email
-            };
         }
     }
 }
