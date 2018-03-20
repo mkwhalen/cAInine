@@ -42,21 +42,20 @@ namespace CAInine.Infrastructure.Business.Services
 
         public async Task<Result<IEnumerable<Animal>>> GetAnimalsByShelterAsync(string shelterId)
         {
-            //try
-            //{
-            //    var record = await _petProvider.GetPetsAtShelter(shelterId);
-            //    if (record != null)
-            //    {
-            //        var animals = record.pet.Select(p => CreateAnimalFromRecord(p));
-            //        return new SuccessResult<IEnumerable<Animal>>(animals);
-            //    }
-            //    return new UnexpectedResult<IEnumerable<Animal>>();
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine(ex);
-            //    return new UnexpectedResult<IEnumerable<Animal>>();
-            //}   
+            try
+            {
+                var record = await _petProvider.GetPetsAtShelter(shelterId);
+                if (record != null)
+                {
+                    return new SuccessResult<IEnumerable<Animal>>(record);
+                }
+                return new UnexpectedResult<IEnumerable<Animal>>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return new UnexpectedResult<IEnumerable<Animal>>();
+            }
             return null;
         }
 

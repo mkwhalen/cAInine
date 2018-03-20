@@ -9,6 +9,7 @@ using CAInine.Core.Interfaces.Providers;
 using CAInine.Core.Models.Configuration;
 using CAInine.Core.Models.Transfer;
 using CAInine.Core.Models.Transfer.PetFinder;
+using CAInine.Core.Models.Transfer.PetFinder.Enums;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -41,12 +42,21 @@ namespace CAInine.Infrastructure.Data.Providers
             var jobject = await MakePetFinderRequestAsync($"{_petFinderSettings.Value.Url}shelter.getPets?format=json&key={_petFinderSettings.Value.ApiKey}&id={shelterId}");
             // TODO: Kenzie - finish this
             var pets = (JArray)jobject["petfinder"]?["pets"]?["pet"];
-            
+
             return pets.Select(jp => new Animal
             {
                 Id = jp["id"]?["$t"]?.Value<string>(),
-                AnimalType = jp["animal"]?["$t"]?.Value<string>()
-                // TODO: map the other properties.
+                ShelterId = jp["shelterId"]?["$t"]?.Value<string>(),
+                ShelterPetId = jp["shelterPetId"]?["$t"]?.Value<string>(),
+                Name = jp["name"]?["$t"]?.Value<string>(),
+                AnimalType = jp["animal"]?["$t"]?.Value<string>(),
+                Breeds = GetBreedsFromAnimal(jp),
+                IsMixBreed = ConvertStringToBool(jp["mix"]?["$t"]?.Value<string>()),
+                Description = jp["description"]?["$t"]?.Value<string>(),
+                Gender = ConvertStringToGender(jp["sex"]?["$t"]?.Value<string>()),
+                Age = ConvertStringToAge(jp["age"]?["$t"]?.Value<string>()),
+                Size = ConvertStringToSize(jp["size"]?["$t"]?.Value<string>())
+
             }).ToList();
         }
 
@@ -73,7 +83,7 @@ namespace CAInine.Infrastructure.Data.Providers
 
         public async Task<List<Shelter>> GetSheltersByLocation(string location)
         {
-            var jobject = await MakePetFinderRequestAsync($"{_petFinderSettings.Value.Url}shelter.find?kformat=json&ey={_petFinderSettings.Value.ApiKey}&location={location}");
+            var jobject = await MakePetFinderRequestAsync($"{_petFinderSettings.Value.Url}shelter.find?format=json&key={_petFinderSettings.Value.ApiKey}&location={location}");
             // TODO: Kenzie - finish this
             return null;
         }
@@ -82,12 +92,61 @@ namespace CAInine.Infrastructure.Data.Providers
         {
             var response = await _client.GetAsync(url);
             var responseBody = await response.Content.ReadAsStringAsync();
-            if(response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode)
             {
                 return JObject.Parse(responseBody);
             }
 
             throw new Exception(responseBody);
+        }
+        private bool ConvertStringToBool(string yesOrNo)
+        {
+            if (yesOrNo == "yes")
+                return true;
+
+            return false;
+        }
+        private PetGender ConvertStringToGender(string genderCode)
+        {
+            if (genderCode == "F")
+                return PetGender.Female;
+
+            return PetGender.Male;
+        }
+        private PetAgeType ConvertStringToAge(string ageCode)
+        {
+            Enum.TryParse(ageCode, out PetAgeType ageType);
+
+            return ageType;
+        }
+        private PetSize ConvertStringToSize(string sizeCode)
+        {
+            switch (sizeCode)
+            {
+                case "S":
+                    return PetSize.Small;
+                case "M":
+                    return PetSize.Medium;
+                case "L":
+                    return PetSize.Large;
+                case "XL":
+                    return PetSize.ExtraLarge;
+            }
+
+            return PetSize.Unknown;
+        }
+
+        private List<string> GetBreedsFromAnimal(JToken jsonAnimal)
+        {
+            var multiBreeds = (jsonAnimal["breeds"]?["breed"] as JArray)?
+                                 .Select(jjp => jjp["$t"]?.Value<string>()).ToList();
+            if(multiBreeds == null)
+            {
+                var singleBreed = jsonAnimal["breeds"]?["breed"]?["$t"]?.Value<string>();
+                multiBreeds = new List<string> { singleBreed };
+            }
+
+            return multiBreeds;
         }
     }
 }

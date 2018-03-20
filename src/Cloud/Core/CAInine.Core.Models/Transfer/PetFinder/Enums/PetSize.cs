@@ -6,6 +6,7 @@ namespace CAInine.Core.Models.Transfer.PetFinder.Enums
         Small,
         Medium,
         Large,
-        ExtraLarge
+        ExtraLarge,
+        Unknown
     }
 }
