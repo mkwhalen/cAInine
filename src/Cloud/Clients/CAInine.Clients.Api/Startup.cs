@@ -85,18 +85,20 @@ namespace CAInine.Clients.Api
             services.AddOptions();
             services.Configure<Urls>(Configuration.GetSection("Urls"));
             services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
+            services.Configure<PetFinder>(Configuration.GetSection("PetFinder"));
 
             // add our implementations now
             // providers
             services.AddScoped<IBlobProvider, AzureBlobStorageProvider>();
             services.AddScoped<IBreedDetectionProvider, WhatDogBreedDetectionProvider>();
+            services.AddScoped<IPetSearchProvider, PetFinderDataProvider>();
 
             // repositories
             services.AddScoped<ISubmittedDogRepository, SubmittedDogRepository>();
 
             // services
             services.AddScoped<IDogProcessingService, DogProcessingService>();
-        
+            services.AddScoped<IPetFinderService, DogFinderService>();
 
         }
 
