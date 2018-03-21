@@ -31,4 +31,6 @@
     <ProjectReference Include="..\..\Infrastructure\CAInine.Infrastructure.Data\CAInine.Infrastructure.Data.csproj" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>
+
 </Project>
